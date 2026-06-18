@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IStudentInitial } from "./type";
+import API from "../http";
 
 const studentInitial: IStudentInitial = {
   name: null,
@@ -21,3 +22,18 @@ const studentSlice = createSlice({
 const { setName, setAddress } = studentSlice.actions;
 export default studentSlice.reducer;
 export { setName, setAddress };
+
+//register
+function registerUser(data) {
+  return async function registerUserThunk() {
+    const response = await API.post("register",data);
+    if(response.status === 200) {
+
+  };
+}
+
+//login
+function loginUser() {}
+
+//forgot password
+function forgotPassword() {}
