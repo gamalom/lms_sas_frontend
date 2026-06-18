@@ -9,3 +9,7 @@ export interface IInitialData {
   user: IUserData;
   status: Status;
 }
+
+export interface IRegisterData extends IUserData {
+  email: string;
+}

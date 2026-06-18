@@ -1,14 +1,20 @@
 import Image from "next/image";
 import { useState } from "react";
 import { IRegisterData } from "./types.register";
+import { registerUser } from "@/src/lib/store/auth/authSlice";
+import { useAppDispatch } from "@/src/lib/store/hooks";
 
 export const Register = () => {
+  const dispatch = useAppDispatch();
   const [data, setData] = useState<IRegisterData>({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    dispatch(registerUser(data));
+  };
   return (
     <>
       <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
