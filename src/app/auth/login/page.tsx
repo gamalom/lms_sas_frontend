@@ -1,17 +1,27 @@
+"use client";
 import Image from "next/image";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { ILoginData } from "./types.login";
+import { LoginUser } from "@/src/lib/store/auth/authSlice";
+import { useAppDispatch } from "@/src/lib/store/hooks";
 
-export const Login = () => {
+export default function LoginPage() {
+  const dispatch = useAppDispatch();
   const [data, setData] = useState<ILoginData>({
     email: "",
     password: "",
   });
 
-  const handleRegisterData = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleLoginData = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
   };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(LoginUser(data));
+  };
+
   return (
     <>
       <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -21,12 +31,13 @@ export const Login = () => {
               className="mx-auto h-12 w-auto"
               src="https://www.svgrepo.com/show/499664/user-happy.svg"
               alt="User happy icon"
+              width={48}
               height={48}
             />
             <h2 className="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
-              Sign up for an account
+              Sign in to your account
             </h2>
-            <form className="space-y-6" method="POST">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="email"
@@ -36,11 +47,14 @@ export const Login = () => {
                 </label>
                 <div className="mt-1">
                   <input
+                    id="email"
                     name="email"
-                    type="email-address"
-                    autoComplete="email-address"
+                    type="email"
+                    autoComplete="email"
+                    value={data.email}
+                    onChange={handleLoginData}
                     required
-                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
+                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 text-black shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -53,11 +67,14 @@ export const Login = () => {
                 </label>
                 <div className="mt-1">
                   <input
+                    id="password"
                     name="password"
                     type="password"
-                    autoComplete="password"
+                    autoComplete="current-password"
+                    value={data.password}
+                    onChange={handleLoginData}
                     required
-                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
+                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 text-black shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -76,4 +93,4 @@ export const Login = () => {
       </div>
     </>
   );
-};
+}

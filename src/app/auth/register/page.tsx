@@ -1,20 +1,29 @@
+"use client";
 import Image from "next/image";
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { IRegisterData } from "./types.register";
 import { registerUser } from "@/src/lib/store/auth/authSlice";
 import { useAppDispatch } from "@/src/lib/store/hooks";
 
-export const Register = () => {
+export default function RegisterPage() {
   const dispatch = useAppDispatch();
   const [data, setData] = useState<IRegisterData>({
     username: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleRegisterData = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+  };
+  console.log(data);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     dispatch(registerUser(data));
   };
+
   return (
     <>
       <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -24,12 +33,13 @@ export const Register = () => {
               className="mx-auto h-12 w-auto"
               src="https://www.svgrepo.com/show/499664/user-happy.svg"
               alt="User happy icon"
+              width={48}
               height={48}
             />
             <h2 className="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
               Sign up for an account
             </h2>
-            <form className="space-y-6" method="POST">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="username"
@@ -39,10 +49,13 @@ export const Register = () => {
                 </label>
                 <div className="mt-1">
                   <input
+                    id="username"
                     name="username"
-                    type="username"
+                    type="text"
+                    value={data.username}
+                    onChange={handleRegisterData}
                     required
-                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
+                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 text-black shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -55,11 +68,14 @@ export const Register = () => {
                 </label>
                 <div className="mt-1">
                   <input
+                    id="email"
                     name="email"
-                    type="email-address"
-                    autoComplete="email-address"
+                    type="email"
+                    autoComplete="email"
+                    value={data.email}
+                    onChange={handleRegisterData}
                     required
-                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
+                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 text-black shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -72,28 +88,14 @@ export const Register = () => {
                 </label>
                 <div className="mt-1">
                   <input
+                    id="password"
                     name="password"
                     type="password"
-                    autoComplete="password"
+                    autoComplete="new-password"
+                    value={data.password}
+                    onChange={handleRegisterData}
                     required
-                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="confirm_password"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Confirm Password
-                </label>
-                <div className="mt-1">
-                  <input
-                    name="confirm_password"
-                    type="password"
-                    autoComplete="confirm-password"
-                    required
-                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
+                    className="px-2 py-3 mt-1 block w-full rounded-md border border-gray-300 text-black shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -111,4 +113,4 @@ export const Register = () => {
       </div>
     </>
   );
-};
+}

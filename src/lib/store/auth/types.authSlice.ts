@@ -2,7 +2,7 @@ import { Status } from "../../types/types";
 
 export interface IUserData {
   username: string;
-  password: string;
+  token: string;
 }
 
 export interface IInitialData {

@@ -8,7 +8,7 @@ import { ILoginData } from "@/src/app/auth/login/types.login";
 const initialState: IInitialData = {
   user: {
     username: "",
-    password: "",
+    token: "",
   },
   status: Status.LOADING,
 };
@@ -32,7 +32,7 @@ export default authSlice.reducer;
 export const registerUser = (data: IRegisterData) => {
   return async function registerUserThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("/api/register", data);
+      const response = await API.post("/api/auth/register", data);
       if (response.status === 201) {
         // Handle successful registration
         dispatch(setStatus(Status.SUCCESS));
@@ -50,9 +50,11 @@ export const registerUser = (data: IRegisterData) => {
 export const LoginUser = (data: ILoginData) => {
   return async function registerUserThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("/api/login", data);
+      const response = await API.post("/api/auth/login", data);
       if (response.status === 200) {
         // Handle successful login
+        dispatch(setUser(response.data.data));
+        localStorage.setItem("token", response.data.data.token);
         dispatch(setStatus(Status.SUCCESS));
       } else {
         dispatch(setStatus(Status.ERROR));
