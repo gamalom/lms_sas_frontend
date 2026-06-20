@@ -1,3 +1,3 @@
 export default function InstituteDashboardPage() {
-  return <div>InstituteDashboardPage</div>;
+  return <h1>this is me</h1>;
 }
