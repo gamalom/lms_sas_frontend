@@ -5,6 +5,8 @@ export interface IInstitute {
   instituteAddress: string;
   institutePhoneNumber: string;
   instituteEmail: string;
+  institutePanNumber?: string;
+  instituteVatNumber?: string;
 }
 
 export interface IInitialInstituteData {

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../store";
 import { Status } from "@/src/lib/types/types";
-import API from "@/src/lib/http";
+import { API } from "@/src/lib/http";
 
 const instituteCourseSlice = createSlice({
   name: "institute-courseSlice",
