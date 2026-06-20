@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IInitialData, IRegisterData, IUserData } from "./types.authSlice";
 import { Status } from "../../types/types";
-import API from "../../http";
+import { API } from "../../http";
 import { AppDispatch } from "../store";
 import { ILoginData } from "@/src/app/auth/login/types.login";
 
