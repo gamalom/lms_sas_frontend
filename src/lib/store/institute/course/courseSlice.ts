@@ -17,26 +17,16 @@ const instituteCourseSlice = createSlice({
       state.status = action.payload;
     },
     setDelteCourse(state, action: PayloadAction<string>) {
-      // state.courses = state.courses.filter(
-      //   (course) => course.courseId !== action.payload,
-      // );
-
-      const index = state.courses.findIndex(
-        (course) => course.courseId === action.payload,
+      state.courses = state.courses.filter(
+        (course) => course.courseId !== action.payload,
       );
-      if (index !== -1) {
-        state.courses.splice(index, 1);
-      }
     },
     setEditCourse(state, action: PayloadAction<any>) {
       const courseId = action.payload.id;
       const data = action.payload.data;
-      const index = state.courses.findIndex(
-        (course) => course.courseId === courseId,
+      state.courses = state.courses.map((course) =>
+        course.courseId === courseId ? { ...course, ...data } : course,
       );
-      if (index !== -1) {
-        state.courses[index] = { ...state.courses[index], ...data };
-      }
     },
   },
 });

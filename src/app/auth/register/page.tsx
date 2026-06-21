@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { IRegisterData } from "./types.register";
 import { registerUser } from "@/src/lib/store/auth/authSlice";
 import { useAppDispatch } from "@/src/lib/store/hooks";
+import MaterialIcon from "@/src/lib/coponents/material-icon";
 
 export default function RegisterPage() {
   const dispatch = useAppDispatch();
@@ -29,12 +29,9 @@ export default function RegisterPage() {
       <div className="bg-gray-100 flex h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           <div className="bg-white shadow-md rounded-md p-6">
-            <Image
-              className="mx-auto h-12 w-auto"
-              src="https://www.svgrepo.com/show/499664/user-happy.svg"
-              alt="User happy icon"
-              width={48}
-              height={48}
+            <MaterialIcon
+              name="accountCircle"
+              className="mx-auto h-12 w-12 text-sky-500"
             />
             <h2 className="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
               Sign up for an account

@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./auth/authSlice";
+import categorySlice from "./institute/category/categorySlice";
 import instituteSlice from "./institute/instituteSlice";
-import teacherSlice from "./teacher/teacherSlice";
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
+    category: categorySlice,
     institute: instituteSlice,
-    teacher: teacherSlice,
   },
 });
 
@@ -16,4 +16,4 @@ export default store;
 //type of dispatch which is useful
 
 export type AppDispatch = typeof store.dispatch;
-export type RootState = typeof store.getState;
+export type RootState = ReturnType<typeof store.getState>;
