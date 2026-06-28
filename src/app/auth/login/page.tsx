@@ -1,16 +1,31 @@
 "use client";
-import { ChangeEvent, FormEvent, useState } from "react";
+
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ILoginData } from "./types.login";
 import { LoginUser } from "@/src/lib/store/auth/authSlice";
-import { useAppDispatch } from "@/src/lib/store/hooks";
+import { isInstituteUser } from "@/src/lib/store/auth/types.authSlice";
+import { useAppDispatch, useAppSelector } from "@/src/lib/store/hooks";
+import { Status } from "@/src/lib/types/types";
 import MaterialIcon from "@/src/lib/coponents/material-icon";
 
 export default function LoginPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const status = useAppSelector((state) => state.auth.status);
+  const user = useAppSelector((state) => state.auth.user);
   const [data, setData] = useState<ILoginData>({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (status === Status.SUCCESS && user.token) {
+      router.push(
+        isInstituteUser(user) ? "/institute/dashboard" : "/dashboard",
+      );
+    }
+  }, [status, user, router]);
 
   const handleLoginData = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -75,6 +90,12 @@ export default function LoginPage() {
                   />
                 </div>
               </div>
+
+              {status === Status.ERROR && (
+                <p className="text-sm text-red-600">
+                  Login failed. Check your email and password.
+                </p>
+              )}
 
               <div>
                 <button

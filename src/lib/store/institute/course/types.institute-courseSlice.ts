@@ -1,17 +1,26 @@
 import { Status } from "@/src/lib/types/types";
 
 export interface IInstituteCourse {
+  courseId: string;
   courseName: string;
   courseDuration: string;
-  coursePrice: number;
+  coursePrice: string;
   courseLevel: string;
   courseDescription: string;
   categoryId: string;
-  courseThumbnaiol: string;
-  courseId: string;
+  courseThumbnail: string;
+  catagoryName?: string;
+  catagoryDescription?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IInitialInstituteCourseData {
-  course: IInstituteCourse[];
+  courses: IInstituteCourse[];
   status: Status;
+}
+
+export interface IEditCoursePayload {
+  id: string;
+  data: Partial<Omit<IInstituteCourse, "courseId">>;
 }

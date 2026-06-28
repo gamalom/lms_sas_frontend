@@ -1,23 +1,34 @@
 "use client";
-import { ChangeEvent, FormEvent, useState } from "react";
+
+import Link from "next/link";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { IRegisterData } from "./types.register";
 import { registerUser } from "@/src/lib/store/auth/authSlice";
-import { useAppDispatch } from "@/src/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/src/lib/store/hooks";
+import { Status } from "@/src/lib/types/types";
 import MaterialIcon from "@/src/lib/coponents/material-icon";
 
 export default function RegisterPage() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const status = useAppSelector((state) => state.auth.status);
   const [data, setData] = useState<IRegisterData>({
     username: "",
     email: "",
     password: "",
   });
 
+  useEffect(() => {
+    if (status === Status.SUCCESS) {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
   const handleRegisterData = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
   };
-  console.log(data);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,8 +45,12 @@ export default function RegisterPage() {
               className="mx-auto h-12 w-12 text-sky-500"
             />
             <h2 className="my-3 text-center text-3xl font-bold tracking-tight text-gray-900">
-              Sign up for an account
+              Register as a Student
             </h2>
+            <p className="mb-4 text-center text-sm text-gray-500">
+              Create your account first. You can register as an institute after
+              logging in.
+            </p>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
@@ -96,6 +111,13 @@ export default function RegisterPage() {
                   />
                 </div>
               </div>
+
+              {status === Status.ERROR && (
+                <p className="text-sm text-red-600">
+                  Registration failed. Please try again.
+                </p>
+              )}
+
               <div>
                 <button
                   type="submit"
@@ -104,6 +126,13 @@ export default function RegisterPage() {
                   Register Account
                 </button>
               </div>
+
+              <p className="text-center text-sm text-gray-600">
+                Already have an account?{" "}
+                <Link href="/auth/login" className="text-sky-600 hover:underline">
+                  Login
+                </Link>
+              </p>
             </form>
           </div>
         </div>

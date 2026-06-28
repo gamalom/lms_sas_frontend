@@ -1,102 +1,135 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
+  IEditTeacherPayload,
   IInitialInstituteTeacherData,
-  IInstituteTeacherWithCourse,
-  TeacherExpertise,
+  IInstituteTeacher,
 } from "./types.institute-teacherSlice";
 import { Status } from "@/src/lib/types/types";
 import { AppDispatch } from "../../store";
-import API from "@/src/lib/http";
+import { APIWITHTOKEN } from "@/src/lib/http";
 
 const initialState: IInitialInstituteTeacherData = {
-  teacher: {
-    teacherName: "",
-    teacherEmail: "",
-    teacherPhoneNumber: "",
-    teacherExpertise: TeacherExpertise.BIGNNIER,
-    joiningDate: "",
-    salary: 0,
-    courseId: "",
-    teacherPhoto: "",
-    course: {
-      courseName: "",
-      coursePrice: "",
-    },
-  },
+  teachers: [],
   status: Status.LOADING,
 };
 
-const instituteslice = createSlice({
+const instituteTeacherSlice = createSlice({
   name: "teacher",
   initialState,
   reducers: {
-    setTeacher(
+    setTeachers(
       state: IInitialInstituteTeacherData,
-      action: PayloadAction<IInstituteTeacherWithCourse>,
+      action: PayloadAction<IInstituteTeacher[]>,
     ) {
-      state.teacher = action.payload;
+      state.teachers = action.payload;
     },
-    setState(
+    setStatus(
       state: IInitialInstituteTeacherData,
       action: PayloadAction<Status>,
     ) {
       state.status = action.payload;
     },
+    setDeleteTeacher(
+      state: IInitialInstituteTeacherData,
+      action: PayloadAction<string>,
+    ) {
+      state.teachers = state.teachers.filter(
+        (teacher) => teacher.id !== action.payload,
+      );
+    },
+    setEditTeacher(
+      state: IInitialInstituteTeacherData,
+      action: PayloadAction<IEditTeacherPayload>,
+    ) {
+      const { id, data } = action.payload;
+      state.teachers = state.teachers.map((teacher) =>
+        teacher.id === id ? { ...teacher, ...data } : teacher,
+      );
+    },
   },
 });
 
-const { setTeacher, setState } = instituteslice.actions;
-export default instituteslice.reducer;
+export const { setTeachers, setStatus, setDeleteTeacher, setEditTeacher } =
+  instituteTeacherSlice.actions;
+export default instituteTeacherSlice.reducer;
 
-export const createInstituteTeacher = (data: IInstituteTeacherWithCourse) => {
+const multipartHeaders = { "Content-Type": "multipart/form-data" };
+
+export function createInstituteTeacher(data: FormData) {
   return async function createInstituteTeacherThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.post("institute/teacher", data);
-      if (response.status === 201) {
-        // assume created teacher is returned in response.data
-
-        dispatch(setState(Status.SUCCESS));
+      const response = await APIWITHTOKEN.post(
+        "/api/institute/teacher",
+        data,
+        { headers: multipartHeaders },
+      );
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(fetchInstituteTeacher());
       } else {
-        dispatch(setState(Status.ERROR));
+        dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
       console.error("Error creating institute teacher:", error);
-      dispatch(setState(Status.ERROR));
+      dispatch(setStatus(Status.ERROR));
     }
   };
-};
+}
 
-export const fetchInstituteTeacher = () => {
+export function fetchInstituteTeacher() {
   return async function fetchInstituteTeacherThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.get("institute/teacher");
-      if (response.status === 201) {
-        // assume created teacher is returned in response.data
-        dispatch(setTeacher(response.data.data));
-        dispatch(setState(Status.SUCCESS));
+      dispatch(setStatus(Status.LOADING));
+      const response = await APIWITHTOKEN.get("/api/institute/teacher");
+      if (response.status === 200) {
+        dispatch(setTeachers(response.data.data ?? []));
+        dispatch(setStatus(Status.SUCCESS));
       } else {
-        dispatch(setState(Status.ERROR));
+        dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.error("Error creating institute teacher:", error);
-      dispatch(setState(Status.ERROR));
+      console.error("Error fetching institute teachers:", error);
+      dispatch(setStatus(Status.ERROR));
     }
   };
-};
+}
 
-export const deleteInstituteTeacherById = (data: { teacherId: string }) => {
+export function deleteInstituteTeacherById(teacherId: string) {
   return async function deleteInstituteTeacherThunk(dispatch: AppDispatch) {
     try {
-      const response = await API.delete(`institute/teacher/${data.teacherId}`);
+      const response = await APIWITHTOKEN.delete(
+        `/api/institute/teacher/${teacherId}`,
+      );
       if (response.status === 200) {
-        dispatch(setState(Status.SUCCESS));
-        //popout teacher of that id
+        dispatch(setDeleteTeacher(teacherId));
+        dispatch(setStatus(Status.SUCCESS));
       } else {
-        dispatch(setState(Status.ERROR));
+        dispatch(setStatus(Status.ERROR));
       }
     } catch (error) {
-      console.error("Error creating institute teacher:", error);
-      dispatch(setState(Status.ERROR));
+      console.error("Error deleting institute teacher:", error);
+      dispatch(setStatus(Status.ERROR));
     }
   };
-};
+}
+
+export function editInstituteTeacher(teacherId: string, data: FormData) {
+  return async function editInstituteTeacherThunk(dispatch: AppDispatch) {
+    try {
+      const response = await APIWITHTOKEN.put(
+        `/api/institute/teacher/${teacherId}`,
+        data,
+        { headers: multipartHeaders },
+      );
+      if (response.status === 200) {
+        dispatch(setStatus(Status.SUCCESS));
+        dispatch(fetchInstituteTeacher());
+      } else {
+        dispatch(setStatus(Status.ERROR));
+      }
+    } catch (error) {
+      console.error("Error editing institute teacher:", error);
+      dispatch(setStatus(Status.ERROR));
+    }
+  };
+}

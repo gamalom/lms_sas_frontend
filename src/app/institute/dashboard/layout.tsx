@@ -1,3 +1,4 @@
+import AuthGuard from "@/src/lib/coponents/auth/auth-guard";
 import DashboardComponent from "@/src/lib/coponents/dashboard/dashboard-component";
 
 interface LayoutProps {
@@ -5,5 +6,9 @@ interface LayoutProps {
 }
 
 export default function DashboardLayout({ children }: LayoutProps) {
-  return <DashboardComponent>{children}</DashboardComponent>;
+  return (
+    <AuthGuard>
+      <DashboardComponent>{children}</DashboardComponent>
+    </AuthGuard>
+  );
 }

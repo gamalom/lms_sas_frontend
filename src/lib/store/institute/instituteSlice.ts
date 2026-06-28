@@ -3,6 +3,7 @@ import { IInitialInstituteData, IInstitute } from "./types.instituteSlice";
 import { Status } from "../../types/types";
 import { AppDispatch } from "../store";
 import { API, APIWITHTOKEN } from "../../http";
+import { markUserAsInstitute } from "../auth/authSlice";
 
 const initialState: IInitialInstituteData = {
   institute: {
@@ -40,11 +41,14 @@ export function createInstitute(data: IInstitute) {
     try {
       const response = await APIWITHTOKEN.post("/api/institute", data);
       if (response.status === 201 || response.status === 200) {
-        // update local state with server response when available, fallback to sent data
-        const instituteData = response.data?.instituteNumber
-          ? { ...data, instituteNumber: response.data.instituteNumber }
+        const instituteNumber = response.data?.instituteNumber;
+        const instituteData = instituteNumber
+          ? { ...data, instituteNumber }
           : data;
         dispatch(setInstitute(instituteData));
+        if (instituteNumber != null) {
+          dispatch(markUserAsInstitute(instituteNumber));
+        }
         dispatch(setStatus(Status.SUCCESS));
       } else {
         dispatch(setStatus(Status.ERROR));

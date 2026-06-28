@@ -6,25 +6,27 @@ export enum TeacherExpertise {
   BIGNNIER = "beginner",
 }
 
-export interface IInstituteTeacherCourse {
-  courseName: string;
-  coursePrice: string;
-}
-
 export interface IInstituteTeacher {
+  id: string;
   teacherName: string;
   teacherEmail: string;
   teacherPhoneNumber: string;
-  teacherExpertise: TeacherExpertise;
+  teacherExpertise: TeacherExpertise | string;
   joiningDate: string;
-  salary: number;
-  courseId: string;
-  teacherPhoto: string;
+  salary: string | number;
+  teacherImage?: string;
+  courseId?: string;
+  courseName?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
-export interface IInstituteTeacherWithCourse extends IInstituteTeacher {
-  course: IInstituteTeacherCourse;
-}
+
 export interface IInitialInstituteTeacherData {
-  teacher: IInstituteTeacherWithCourse;
+  teachers: IInstituteTeacher[];
   status: Status;
+}
+
+export interface IEditTeacherPayload {
+  id: string;
+  data: Partial<Omit<IInstituteTeacher, "id">>;
 }
