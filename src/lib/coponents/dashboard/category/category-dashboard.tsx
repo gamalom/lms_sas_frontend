@@ -11,9 +11,15 @@ import { Status } from "@/src/lib/types/types";
 import { useDebounce } from "../../debounce";
 import CategoryDeleteToast from "./category-delete-toast";
 import CategoryModal from "./category-modal";
+import CategoryPagination from "./category-pagination";
 import CategorySearch from "./category-search";
 import CategoryTable from "./category-table";
-import { filterCategories } from "./category.constants";
+import {
+  CATEGORIES_PER_PAGE,
+  filterCategories,
+  getTotalPages,
+  paginateCategories,
+} from "./category.constants";
 
 type CategoryModalState =
   | { mode: "create" }
@@ -25,19 +31,36 @@ export default function CategoryDashboard() {
   const { categories, status } = useAppSelector((state) => state.category);
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
+  const [currentPage, setCurrentPage] = useState(1);
   const [categoryToDelete, setCategoryToDelete] = useState<ICategory | null>(
     null,
   );
   const [modalState, setModalState] = useState<CategoryModalState>(null);
 
-  // Fetch categories when the component mounts
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch]);
+
   const filteredCategories = useMemo(
     () => filterCategories(categories, debouncedSearch),
     [categories, debouncedSearch],
+  );
+
+  const totalPages = getTotalPages(filteredCategories.length);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const paginatedCategories = useMemo(
+    () => paginateCategories(filteredCategories, currentPage),
+    [filteredCategories, currentPage],
   );
 
   function openCreateModal() {
@@ -77,10 +100,18 @@ export default function CategoryDashboard() {
       )}
 
       <CategoryTable
-        categories={filteredCategories}
+        categories={paginatedCategories}
         loading={loading}
         onEdit={openEditModal}
         onDelete={setCategoryToDelete}
+      />
+
+      <CategoryPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredCategories.length}
+        itemsPerPage={CATEGORIES_PER_PAGE}
+        onPageChange={setCurrentPage}
       />
 
       {modalState && (

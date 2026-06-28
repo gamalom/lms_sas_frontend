@@ -26,6 +26,24 @@ export function formatCreatedAt(value?: string) {
   });
 }
 
+export const CATEGORIES_PER_PAGE = 5;
+
+export function paginateCategories<T>(
+  items: T[],
+  page: number,
+  perPage = CATEGORIES_PER_PAGE,
+) {
+  const start = (page - 1) * perPage;
+  return items.slice(start, start + perPage);
+}
+
+export function getTotalPages(
+  totalItems: number,
+  perPage = CATEGORIES_PER_PAGE,
+) {
+  return Math.max(1, Math.ceil(totalItems / perPage));
+}
+
 export function filterCategories(categories: ICategory[], query: string) {
   const normalizedQuery = query.trim().toLowerCase();
   if (!normalizedQuery) return categories;
