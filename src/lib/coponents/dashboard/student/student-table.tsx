@@ -1,23 +1,23 @@
-import { IInstituteTeacher } from "@/src/lib/store/institute/teacher/types.institute-teacherSlice";
+import { IInstituteStudent } from "@/src/lib/store/institute/student/types.institute-studentSlice";
 import MaterialIcon from "../../material-icon";
 import TableImage from "../table-image";
-import { getExpertiseLabel, TABLE_COLUMNS } from "./teacher.constants";
+import { TABLE_COLUMNS } from "./student.constants";
 
-type TeacherTableProps = {
-  teachers: IInstituteTeacher[];
+type StudentTableProps = {
+  students: IInstituteStudent[];
   loading: boolean;
   readOnly?: boolean;
-  onEdit?: (teacher: IInstituteTeacher) => void;
-  onDelete?: (teacher: IInstituteTeacher) => void;
+  onEdit?: (student: IInstituteStudent) => void;
+  onDelete?: (student: IInstituteStudent) => void;
 };
 
-export default function TeacherTable({
-  teachers,
+export default function StudentTable({
+  students,
   loading,
   readOnly = false,
   onEdit,
   onDelete,
-}: TeacherTableProps) {
+}: StudentTableProps) {
   const showActions = !readOnly && onEdit && onDelete;
 
   return (
@@ -51,26 +51,26 @@ export default function TeacherTable({
                 colSpan={TABLE_COLUMNS.length + (showActions ? 1 : 0)}
                 className="p-5 text-sm text-gray-500"
               >
-                Loading teachers...
+                Loading students...
               </td>
             </tr>
           )}
 
-          {!loading && teachers.length === 0 && (
+          {!loading && students.length === 0 && (
             <tr>
               <td
                 colSpan={TABLE_COLUMNS.length + (showActions ? 1 : 0)}
                 className="p-5 text-sm text-gray-500"
               >
-                No teachers found.
+                No students found.
               </td>
             </tr>
           )}
 
           {!loading &&
-            teachers.map((teacher) => (
+            students.map((student) => (
               <tr
-                key={teacher.id}
+                key={student.id}
                 className="bg-white transition-all duration-500 hover:bg-gray-50"
               >
                 {TABLE_COLUMNS.map((column) => (
@@ -78,21 +78,19 @@ export default function TeacherTable({
                     key={column.key}
                     className="whitespace-nowrap p-5 text-sm leading-6 font-medium text-gray-900"
                   >
-                    {column.key === "teacherImage" ? (
+                    {column.key === "studentImage" ? (
                       <TableImage
-                        src={teacher.teacherImage}
-                        alt={teacher.teacherName}
+                        src={student.studentImage}
+                        alt={student.studentName}
                       />
-                    ) : column.key === "teacherExpertise" ? (
-                      getExpertiseLabel(String(teacher.teacherExpertise))
-                    ) : column.key === "joiningDate" ? (
-                      teacher.joiningDate ? (
-                        new Date(teacher.joiningDate).toLocaleDateString()
+                    ) : column.key === "enrollmentDate" ? (
+                      student.enrollmentDate ? (
+                        new Date(student.enrollmentDate).toLocaleDateString()
                       ) : (
                         "—"
                       )
                     ) : (
-                      (teacher[column.key] ?? "—")
+                      (student[column.key] ?? "—")
                     )}
                   </td>
                 ))}
@@ -101,7 +99,7 @@ export default function TeacherTable({
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => onEdit?.(teacher)}
+                        onClick={() => onEdit?.(student)}
                         className="flex items-center gap-1 rounded-md px-3 py-1 text-sm font-medium text-indigo-600 hover:bg-indigo-50"
                       >
                         <MaterialIcon name="edit" className="h-4 w-4" />
@@ -109,7 +107,7 @@ export default function TeacherTable({
                       </button>
                       <button
                         type="button"
-                        onClick={() => onDelete?.(teacher)}
+                        onClick={() => onDelete?.(student)}
                         className="flex items-center gap-1 rounded-md px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50"
                       >
                         <MaterialIcon name="delete" className="h-4 w-4" />

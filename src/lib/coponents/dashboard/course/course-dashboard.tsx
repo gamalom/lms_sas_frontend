@@ -34,8 +34,9 @@ export default function CourseDashboard() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const [currentPage, setCurrentPage] = useState(1);
-  const [courseToDelete, setCourseToDelete] =
-    useState<IInstituteCourse | null>(null);
+  const [courseToDelete, setCourseToDelete] = useState<IInstituteCourse | null>(
+    null,
+  );
   const [modalState, setModalState] = useState<CourseModalState>(null);
 
   useEffect(() => {
@@ -88,7 +89,8 @@ export default function CourseDashboard() {
     setCourseToDelete(null);
   }
 
-  const loading = useAppSelector((state) => state.course.status) === Status.LOADING;
+  const loading =
+    useAppSelector((state) => state.course.status) === Status.LOADING;
   const error = useAppSelector((state) => state.course.status) === Status.ERROR;
 
   return (

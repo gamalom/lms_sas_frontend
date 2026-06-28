@@ -4,6 +4,7 @@ import categorySlice from "./institute/category/categorySlice";
 import instituteSlice from "./institute/instituteSlice";
 import instituteCourseSlice from "./institute/course/courseSlice";
 import instituteTeacherSlice from "./institute/teacher/institute-teacherSlice";
+import instituteStudentSlice from "./institute/student/institute-studentSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     institute: instituteSlice,
     course: instituteCourseSlice,
     teacher: instituteTeacherSlice,
+    student: instituteStudentSlice,
   },
 });
 

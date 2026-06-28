@@ -1,7 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import MaterialIcon from "../material-icon";
 
-const Navbar = () => {
+export default function Navbar() {
+  const pathname = usePathname();
+  const hideNavbar =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/institute/dashboard") ||
+    pathname.startsWith("/institute/create");
+
+  if (hideNavbar) return null;
+
   return (
     <header className="sticky inset-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-lg">
       <nav className="mx-auto flex max-w-6xl gap-8 px-6 py-4 transition-all duration-200 ease-in-out lg:px-12">
@@ -33,6 +44,4 @@ const Navbar = () => {
       </nav>
     </header>
   );
-};
-
-export default Navbar;
+}

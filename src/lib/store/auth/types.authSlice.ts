@@ -22,6 +22,17 @@ export function isInstituteUser(user: IUserData) {
   return user.role === "institute" && user.instituteId != null && user.instituteId !== "";
 }
 
+export function isStudentUser(user: IUserData) {
+  return user.role === "student";
+}
+
+export function canManageInstituteResources(user: IUserData) {
+  return (
+    isInstituteUser(user) ||
+    user.role === "super-admin"
+  );
+}
+
 export function persistAuthUser(user: IUserData) {
   localStorage.setItem("token", user.token);
   localStorage.setItem("username", user.username ?? "");

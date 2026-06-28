@@ -7,6 +7,7 @@ import {
   fetchInstituteTeacher,
 } from "@/src/lib/store/institute/teacher/institute-teacherSlice";
 import { IInstituteTeacher } from "@/src/lib/store/institute/teacher/types.institute-teacherSlice";
+import { canManageInstituteResources } from "@/src/lib/store/auth/types.authSlice";
 import { useAppDispatch, useAppSelector } from "@/src/lib/store/hooks";
 import { Status } from "@/src/lib/types/types";
 import { useDebounce } from "../../debounce";
@@ -27,10 +28,18 @@ type TeacherModalState =
   | { mode: "edit"; teacher: IInstituteTeacher }
   | null;
 
-export default function TeacherDashboard() {
+type TeacherDashboardProps = {
+  readOnly?: boolean;
+};
+
+export default function TeacherDashboard({
+  readOnly = false,
+}: TeacherDashboardProps) {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const { teachers } = useAppSelector((state) => state.teacher);
   const { courses } = useAppSelector((state) => state.course);
+  const canManage = !readOnly && canManageInstituteResources(user);
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const [currentPage, setCurrentPage] = useState(1);
@@ -98,7 +107,8 @@ export default function TeacherDashboard() {
       <TeacherSearch
         search={search}
         onSearchChange={setSearch}
-        onAddClick={openCreateModal}
+        onAddClick={canManage ? openCreateModal : undefined}
+        readOnly={!canManage}
       />
 
       {error && (
@@ -110,8 +120,9 @@ export default function TeacherDashboard() {
       <TeacherTable
         teachers={paginatedTeachers}
         loading={loading}
-        onEdit={openEditModal}
-        onDelete={setTeacherToDelete}
+        readOnly={!canManage}
+        onEdit={canManage ? openEditModal : undefined}
+        onDelete={canManage ? setTeacherToDelete : undefined}
       />
 
       <TeacherPagination
@@ -122,7 +133,7 @@ export default function TeacherDashboard() {
         onPageChange={setCurrentPage}
       />
 
-      {modalState && (
+      {modalState && canManage && (
         <TeacherModal
           mode={modalState.mode}
           teacher={modalState.mode === "edit" ? modalState.teacher : null}
@@ -130,7 +141,7 @@ export default function TeacherDashboard() {
         />
       )}
 
-      {teacherToDelete && (
+      {teacherToDelete && canManage && (
         <TeacherDeleteToast
           teacher={teacherToDelete}
           onCancel={() => setTeacherToDelete(null)}
